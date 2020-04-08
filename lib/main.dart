@@ -45,7 +45,11 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('network test'),
       ),
-      body: Center(child: Text(data != null ? data[0][1] : 'data is null')),
+      body: ListView.builder(
+          itemCount: (data == null ? 0 : data[0].length),
+          itemBuilder: (BuildContext context, int index) {
+            return Center(child: Text(data[0][index]));
+          }),
     );
   }
 }
