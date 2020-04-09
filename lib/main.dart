@@ -22,20 +22,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   //
 
-  List<List<dynamic>> data;
-
-  @override
-  void initState() {
-    loadAsset();
-    super.initState();
-  }
-
-  loadAsset() async {
+  Future<List<String>> loadAsset() async {
     var myData = await rootBundle.loadString("assets/data/category.csv");
     List<List<dynamic>> csvTable = CsvToListConverter().convert(myData);
-      setState(() {
-        data = csvTable;
-      });
+    //
+    List<String> data = [];
+    csvTable[0].forEach((value) {
+      data.add(value.toString());
+    });
+    return data;
   }
 
   //
@@ -45,11 +40,24 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('network test'),
       ),
-      body: ListView.builder(
-          itemCount: (data == null ? 0 : data[0].length),
-          itemBuilder: (BuildContext context, int index) {
-            return Center(child: Text(data[0][index]));
-          }),
+      body: Center(
+        child: FutureBuilder(
+            future: loadAsset(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              // this condition is important
+              if (snapshot.data == null) {
+                return Center(
+                  child: Text('loading data'),
+                );
+              } else {
+                return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Center(child: Text(snapshot.data[index]));
+                    });
+              }
+            }),
+      ),
     );
   }
 }
