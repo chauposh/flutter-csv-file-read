@@ -33,9 +33,9 @@ class _HomePageState extends State<HomePage> {
   loadAsset() async {
     var myData = await rootBundle.loadString("assets/data/category.csv");
     List<List<dynamic>> csvTable = CsvToListConverter().convert(myData);
-    setState(() {
-      data = csvTable;
-    });
+      setState(() {
+        data = csvTable;
+      });
   }
 
   //
